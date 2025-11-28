@@ -14,7 +14,12 @@ body,
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   background: radial-gradient(circle at top, #1a1f3b 0, #050813 55%, #000 100%);
   color: #f8fafc;
 }
@@ -93,7 +98,8 @@ body {
 .btn.primary {
   border-color: rgba(96, 165, 250, 0.9);
   background: radial-gradient(circle at top, #1d4ed8, #020617);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4),
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.4),
     0 10px 30px rgba(37, 99, 235, 0.45);
 }
 
@@ -104,7 +110,8 @@ body {
 }
 
 .btn.primary:hover {
-  box-shadow: 0 0 0 1px rgba(191, 219, 254, 0.95),
+  box-shadow:
+    0 0 0 1px rgba(191, 219, 254, 0.95),
     0 12px 34px rgba(37, 99, 235, 0.8);
 }
 
@@ -115,7 +122,7 @@ body {
 
 .game-page {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   max-width: 1200px;
   display: flex;
   flex-direction: column;
@@ -141,15 +148,26 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
   gap: 12px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .game-canvas {
   position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   border-radius: 16px;
   overflow: hidden;
   background: radial-gradient(circle at top, #020617, #000);
   border: 1px solid rgba(148, 163, 184, 0.5);
   box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.8);
+}
+
+.game-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .side-panel {
@@ -186,5 +204,3 @@ body {
   gap: 6px;
   font-size: 14px;
 }
-
-
