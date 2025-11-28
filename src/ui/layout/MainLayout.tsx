@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
-type MainLayoutProps = {
+export interface MainLayoutProps {
   children: ReactNode;
-};
+}
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
@@ -15,5 +15,3 @@ export function MainLayout({ children }: MainLayoutProps) {
     </div>
   );
 }
-
-

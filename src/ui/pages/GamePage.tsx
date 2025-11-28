@@ -20,6 +20,9 @@ export function GamePage() {
       .then(() => {
         if (!containerRef.current) return;
         containerRef.current.appendChild(app.canvas);
+      })
+      .catch((error) => {
+        console.error('Failed to initialize PixiJS application:', error);
       });
 
     return () => {
