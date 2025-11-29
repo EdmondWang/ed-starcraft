@@ -74,6 +74,8 @@ function createBuilding(
     hp: stats.maxHp,
     stats,
     isTownHall: kind === 'town-hall',
+    isBuilding: false,
+    buildProgress: 100,
   };
 }
 
@@ -116,9 +118,27 @@ export function createInitialGameState(): GameState {
   ];
 
   const units: Unit[] = [
+    // P1 单位
     createUnit('u-p1-worker-1', 'p1', 'protoss', 'worker', { x: p1Spawn.x + 4, y: p1Spawn.y + 2 }),
     createUnit('u-p1-worker-2', 'p1', 'protoss', 'worker', { x: p1Spawn.x - 3, y: p1Spawn.y - 2 }),
+    createUnit('u-p1-infantry-1', 'p1', 'protoss', 'basic-infantry', {
+      x: p1Spawn.x + 6,
+      y: p1Spawn.y,
+    }),
+    createUnit('u-p1-infantry-2', 'p1', 'protoss', 'basic-infantry', {
+      x: p1Spawn.x + 8,
+      y: p1Spawn.y,
+    }),
+    // P2 单位
     createUnit('u-p2-worker-1', 'p2', 'zerg', 'worker', { x: p2Spawn.x - 4, y: p2Spawn.y + 1 }),
+    createUnit('u-p2-infantry-1', 'p2', 'zerg', 'basic-infantry', {
+      x: p2Spawn.x - 6,
+      y: p2Spawn.y,
+    }),
+    createUnit('u-p2-infantry-2', 'p2', 'zerg', 'basic-infantry', {
+      x: p2Spawn.x - 8,
+      y: p2Spawn.y,
+    }),
   ];
 
   const initialState: GameState = {
@@ -133,5 +153,3 @@ export function createInitialGameState(): GameState {
 
   return initialState;
 }
-
-
