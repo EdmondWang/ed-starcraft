@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { ParticleGalaxy } from '../components/ParticleGalaxy';
 
 export function MainMenuPage() {
   return (
-    <div className="menu">
+    <div className="menu relative min-h-screen">
+      <ParticleGalaxy />
       <h2>Main Menu</h2>
       <div className="menu-buttons">
         <Link to="/game" className="btn primary">
@@ -21,5 +23,3 @@ export function MainMenuPage() {
     </div>
   );
 }
-
-
