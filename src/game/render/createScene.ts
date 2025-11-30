@@ -1,11 +1,11 @@
 import { Container, Graphics, Text } from 'pixi.js';
 import type { GameState, ResourceNode, Unit, Building, Tile } from '../core/types';
-// 移除不存在的CameraState导入
+// Remove non-existent CameraState import
 import { factionColors, resourceColor, mapBackgroundColor } from './colors';
 
 const TILE_SIZE = 8; // pixels per logical unit
 
-// 地形颜色映射
+// Terrain color mapping
 const terrainColors: Record<string, number> = {
   grass: 0x22c55e,
   water: 0x0ea5e9,
@@ -46,16 +46,17 @@ function drawMapBackground(
 ) {
   const g = new Graphics();
 
-  // 清空现有内容
+  // Clear existing content
   mapContainer.removeChildren();
 
-  // 如果有瓦片数据，渲染瓦片
+  // If tile data exists, render tiles
   if (state.map.tiles) {
     const tileSize = TILE_SIZE * zoom;
-    const startX = Math.floor(cameraX - 20); // 渲染摄像机周围一定范围的瓦片
-    const startY = Math.floor(cameraY - 20);
-    const endX = Math.ceil(cameraX + 20);
-    const endY = Math.ceil(cameraY + 20);
+    // Render tiles in a range around the camera
+    const startX = Math.floor(cameraX - 30); // Increase render range to 30 to show more units
+    const startY = Math.floor(cameraY - 30);
+    const endX = Math.ceil(cameraX + 30);
+    const endY = Math.ceil(cameraY + 30);
 
     for (let y = Math.max(0, startY); y < Math.min(state.map.tiles.length, endY); y++) {
       for (let x = Math.max(0, startX); x < Math.min(state.map.tiles[y].length, endX); x++) {
@@ -138,7 +139,8 @@ function createBuildingGraphics(
   const g = new Graphics();
   const pos = toScreen(building.position.x, building.position.y, cameraX, cameraY, zoom);
   const baseColor = factionColors[building.factionId];
-  const color = building.isBuilding ? 0x999900 : baseColor;
+  // Building should always display faction color, isBuilding property only identifies it as a building object
+  const color = baseColor;
   const baseSize = building.isTownHall ? 14 : 10;
   const size = baseSize * zoom;
 
@@ -238,10 +240,11 @@ export function createScene(state: GameState): Container {
     sceneData.selectionLayer,
   );
 
-  // 初始摄像机位置在地图中心
-  const cameraX = state.map.size.x / 2;
-  const cameraY = state.map.size.y / 2;
-  const zoom = 1;
+  // Initial camera position set to local player's spawn point instead of map center
+  const localPlayerSpawn = state.map.playerSpawnPoints[0]; // Assume first spawn point is local player
+  const cameraX = localPlayerSpawn.x;
+  const cameraY = localPlayerSpawn.y;
+  const zoom = 1.5; // Increase zoom to see units and buildings more clearly
 
   drawMapBackground(sceneData.mapLayer, state, cameraX, cameraY, zoom);
 
@@ -261,7 +264,7 @@ export function createScene(state: GameState): Container {
     sceneData.unitLayer.addChild(g);
   });
 
-  // 保存 sceneData 和摄像机状态到 root 的 userData 中
+  // Save sceneData and camera state to root's userData
   (
     sceneData.root as Container & {
       __sceneData?: SceneData;
@@ -275,6 +278,9 @@ export function createScene(state: GameState): Container {
       __camera?: { x: number; y: number; zoom: number };
     }
   ).__camera = { x: cameraX, y: cameraY, zoom };
+
+  // Add padding to the bottom of the render area
+  sceneData.root.y = 20; // Move the entire scene up by 20px to create bottom padding
 
   return sceneData.root;
 }
@@ -293,27 +299,27 @@ export function updateScene(root: Container, state: GameState): void {
   // 更新地图背景
   drawMapBackground(sceneData.mapLayer, state, camera.x, camera.y, camera.zoom);
 
-  // 更新资源节点
+  // Update resource nodes
   sceneData.resourceLayer.removeChildren();
   state.map.resourceNodes.forEach((node) => {
-    // 只渲染摄像机可见范围内的资源节点
+    // Only render resource nodes within camera view
     const distanceX = Math.abs(node.position.x - camera.x);
     const distanceY = Math.abs(node.position.y - camera.y);
-    const visibleRadius = 30 / camera.zoom;
+    const visibleRadius = 40 / camera.zoom; // Increase visible radius to show more nodes
 
     if (distanceX < visibleRadius && distanceY < visibleRadius) {
       drawResourceNode(sceneData.resourceLayer, node, camera.x, camera.y, camera.zoom);
     }
   });
 
-  // 更新建筑
+  // Update buildings
   sceneData.buildingLayer.removeChildren();
   sceneData.buildingGraphics.clear();
   state.buildings.forEach((building) => {
-    // 只渲染摄像机可见范围内的建筑
+    // Only render buildings within camera view
     const distanceX = Math.abs(building.position.x - camera.x);
     const distanceY = Math.abs(building.position.y - camera.y);
-    const visibleRadius = 30 / camera.zoom;
+    const visibleRadius = 40 / camera.zoom; // Increase visible radius to show more buildings
 
     if (distanceX < visibleRadius && distanceY < visibleRadius) {
       const g = createBuildingGraphics(building, camera.x, camera.y, camera.zoom);
@@ -322,24 +328,24 @@ export function updateScene(root: Container, state: GameState): void {
     }
   });
 
-  // 更新单位位置和选中状态
+  // Update unit positions and selection states
   sceneData.unitLayer.removeChildren();
   sceneData.unitGraphics.clear();
   sceneData.selectionLayer.removeChildren();
   sceneData.selectionGraphics.clear();
 
   state.units.forEach((unit) => {
-    // 只渲染摄像机可见范围内的单位
+    // Only render units within camera view
     const distanceX = Math.abs(unit.position.x - camera.x);
     const distanceY = Math.abs(unit.position.y - camera.y);
-    const visibleRadius = 30 / camera.zoom;
+    const visibleRadius = 40 / camera.zoom; // Increase visible radius to show more units
 
     if (distanceX < visibleRadius && distanceY < visibleRadius) {
       const g = createUnitGraphics(unit, camera.x, camera.y, camera.zoom);
       sceneData.unitGraphics.set(unit.id, g);
       sceneData.unitLayer.addChild(g);
 
-      // 更新选中高亮
+      // Update selection highlight
       if (unit.selected) {
         const sel = createSelectionHighlight(unit, camera.x, camera.y, camera.zoom);
         sceneData.selectionGraphics.set(unit.id, sel);

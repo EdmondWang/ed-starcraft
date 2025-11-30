@@ -1,7 +1,7 @@
 import type { GameState, Building, FactionId } from './types';
 import { BuildingKind } from './types';
 
-// 游戏状态枚举
+// Game status enum
 export enum GameStatus {
   IN_PROGRESS,
   VICTORY,
@@ -9,7 +9,7 @@ export enum GameStatus {
   DRAW,
 }
 
-// 游戏阶段枚举
+// Game phase enum
 export enum GamePhase {
   PREPARATION,
   BATTLE,
@@ -25,31 +25,31 @@ export function checkVictoryConditions(gameState: GameState): GameState {
   const localPlayer = gameState.players.find((p) => p.id === gameState.localPlayerId);
   if (!localPlayer) return gameState;
 
-  // 检查玩家是否还有指挥中心
+  // Check if player still has command center
   const hasCommandCenter = gameState.buildings.some(
     (b) =>
       b.ownerId === localPlayer.id && b.kind === ('command_center' as BuildingKind) && b.hp > 0,
   );
 
-  // 检查敌方是否还有指挥中心
+  // Check if enemies still have command centers
   const enemyCommandCenters = gameState.buildings.filter(
     (b) =>
       b.ownerId !== localPlayer.id && b.kind === ('command_center' as BuildingKind) && b.hp > 0,
   );
 
-  // 检查玩家是否还有存活的单位或建筑
+  // Check if player has any alive units or buildings
   const hasAliveUnits = gameState.units.some((u) => u.ownerId === localPlayer.id && u.hp > 0);
   const hasAliveBuildings = gameState.buildings.some(
     (b) => b.ownerId === localPlayer.id && b.hp > 0,
   );
 
-  // 更新游戏状态
+  // Update game state
   if (!hasCommandCenter && !hasAliveUnits && !hasAliveBuildings) {
-    // 玩家没有任何存活单位和建筑 - 失败
-    // 不再设置不存在的gameStatus和gamePhase属性
+    // Player has no surviving units or buildings - defeat
+    // No longer setting non-existent gameStatus and gamePhase properties
   } else if (enemyCommandCenters.length === 0) {
-    // 所有敌方指挥中心都被摧毁 - 胜利
-    // 不再设置不存在的gameStatus和gamePhase属性
+    // All enemy command centers destroyed - victory
+    // No longer setting non-existent gameStatus and gamePhase properties
   }
 
   return gameState;
@@ -69,7 +69,7 @@ export function initializeGameState(playerName: string = 'Player'): GameState {
     players: [
       {
         id: localPlayerId,
-        name: '玩家',
+        name: 'Player',
         resources: {
           minerals: 50,
           gas: 0,
@@ -78,7 +78,7 @@ export function initializeGameState(playerName: string = 'Player'): GameState {
       },
       {
         id: enemyPlayerId,
-        name: '电脑',
+        name: 'Computer',
         resources: {
           minerals: 50,
           gas: 0,
@@ -87,7 +87,7 @@ export function initializeGameState(playerName: string = 'Player'): GameState {
       },
     ],
     units: [
-      // 初始工人
+      // Initial worker
       {
         id: 'unit-1',
         ownerId: localPlayerId,
@@ -108,7 +108,7 @@ export function initializeGameState(playerName: string = 'Player'): GameState {
       },
     ],
     buildings: [
-      // 初始指挥中心
+      // Initial command center
       {
         id: 'building-1',
         ownerId: localPlayerId,
@@ -122,7 +122,7 @@ export function initializeGameState(playerName: string = 'Player'): GameState {
         isBuilding: false,
         buildProgress: 100,
       },
-      // 敌方指挥中心
+      // Enemy command center
       {
         id: 'building-2',
         ownerId: enemyPlayerId,
@@ -137,12 +137,12 @@ export function initializeGameState(playerName: string = 'Player'): GameState {
         buildProgress: 100,
       },
     ],
-    // 游戏时间（毫秒）
+    // Game time (milliseconds)
     gameTimeMs: 0,
-    // 添加缺少的属性
+    // Add missing properties
     map: {
       id: 'default-map',
-      name: '默认地图',
+      name: 'Default Map',
       size: { x: 30, y: 30 },
       playerSpawnPoints: [
         { x: 4, y: 4 },
@@ -167,11 +167,11 @@ export function updateGameState(gameState: GameState, deltaTimeMs: number): Game
   // 检查胜利条件
   checkVictoryConditions(gameState);
 
-  // 自动收集资源（基地每分钟产生10矿物）
-  const resourceGenerationInterval = 60000; // 60秒
+  // Auto-collect resources (bases generate 10 minerals per minute)
+  const resourceGenerationInterval = 60000; // 60 seconds
   if (gameState.gameTimeMs % resourceGenerationInterval < deltaTimeMs) {
     gameState.players.forEach((player) => {
-      // 检查玩家是否有指挥中心
+      // Check if player has command center
       const hasCommandCenter = gameState.buildings.some(
         (b) => b.ownerId === player.id && b.kind === ('command_center' as BuildingKind) && b.hp > 0,
       );

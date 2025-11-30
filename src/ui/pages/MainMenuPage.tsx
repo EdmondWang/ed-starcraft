@@ -3,19 +3,19 @@ import { Link } from 'react-router-dom';
 export function MainMenuPage() {
   return (
     <div className="menu">
-      <h2>主菜单</h2>
+      <h2>Main Menu</h2>
       <div className="menu-buttons">
         <Link to="/game" className="btn primary">
-          开始游戏
+          Start Game
         </Link>
         <Link to="/tutorial" className="btn">
-          教程
+          Tutorial
         </Link>
         <button className="btn disabled" disabled>
-          读取存档（占位）
+          Load Game (Placeholder)
         </button>
         <button className="btn disabled" disabled>
-          设置（占位）
+          Settings (Placeholder)
         </button>
       </div>
     </div>

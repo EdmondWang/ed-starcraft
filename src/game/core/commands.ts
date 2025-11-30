@@ -91,7 +91,7 @@ export function commandAttackTarget(state: GameState, targetUnitId: string): voi
 }
 
 /**
- * 右键点击建筑：攻击目标建筑
+ * Right click building: Attack target building
  */
 export function commandAttackBuilding(state: GameState, targetBuildingId: string): void {
   const selectedUnits = state.units.filter(
@@ -132,7 +132,7 @@ export function commandSelectUnit(state: GameState, unitId: string): void {
 }
 
 /**
- * 左键点击空白处：取消选择
+ * Left click empty space: Deselect all
  */
 export function commandDeselectAll(state: GameState): void {
   state.units.forEach((u) => {
@@ -141,7 +141,7 @@ export function commandDeselectAll(state: GameState): void {
 }
 
 /**
- * 将屏幕坐标转换为世界坐标
+ * Convert screen coordinates to world coordinates
  */
 export function screenToWorld(
   screenX: number,
@@ -158,7 +158,7 @@ export function screenToWorld(
 }
 
 /**
- * 游戏逻辑坐标转换为屏幕坐标
+ * Convert world coordinates to screen coordinates
  */
 export function worldToScreen(
   worldX: number,

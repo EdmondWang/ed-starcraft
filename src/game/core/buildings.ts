@@ -27,7 +27,7 @@ export const PRODUCTION_TIMES = {
 };
 
 /**
- * 检查是否可以建造建筑
+ * Check if a structure can be built
  */
 export function canBuildStructure(
   gameState: GameState,
@@ -37,17 +37,17 @@ export function canBuildStructure(
 ): { canBuild: boolean; reason?: string } {
   const player = gameState.players.find(p => p.id === playerId);
   if (!player) {
-    return { canBuild: false, reason: '玩家不存在' };
+    return { canBuild: false, reason: 'Player does not exist' };
   }
 
   // 检查资源
   const cost = BUILDING_COSTS[buildingKind as keyof typeof BUILDING_COSTS];
   if (!cost) {
-    return { canBuild: false, reason: '未知建筑类型' };
+    return { canBuild: false, reason: 'Unknown building type' };
   }
 
   if (player.resources.minerals < cost.minerals || player.resources.gas < cost.gas) {
-    return { canBuild: false, reason: '资源不足' };
+    return { canBuild: false, reason: 'Insufficient resources' };
   }
 
   // 检查位置是否已被占据
@@ -58,7 +58,7 @@ export function canBuildStructure(
   );
 
   if (occupied) {
-    return { canBuild: false, reason: '位置已被占据' };
+    return { canBuild: false, reason: 'Position is occupied' };
   }
 
   // 检查地形
@@ -69,7 +69,7 @@ export function canBuildStructure(
         tileY >= 0 && tileY < gameState.map.tiles.length) {
       const tile = gameState.map.tiles[tileY][tileX];
       if (!tile.isWalkable) {
-        return { canBuild: false, reason: '无法在该地形建造' };
+        return { canBuild: false, reason: 'Cannot build on this terrain' };
       }
     }
   }
@@ -78,7 +78,7 @@ export function canBuildStructure(
 }
 
 /**
- * 开始建造建筑
+ * Start building construction
  */
 export function startBuilding(
   gameState: GameState,
@@ -88,7 +88,7 @@ export function startBuilding(
 ): Building | null {
   const canBuildCheck = canBuildStructure(gameState, buildingKind, position, playerId);
   if (!canBuildCheck.canBuild) {
-    console.log(`无法建造: ${canBuildCheck.reason}`);
+    console.log(`Cannot build: ${canBuildCheck.reason}`);
     return null;
   }
 
@@ -253,7 +253,7 @@ export function updateUnitProduction(gameState: GameState, deltaTimeMs: number):
 }
 
 /**
- * 在建筑附近生成单位
+ * Spawn unit near building
  */
 function spawnUnit(gameState: GameState, building: Building): void {
   if (!building.producing) return;
@@ -284,7 +284,7 @@ function spawnUnit(gameState: GameState, building: Building): void {
 }
 
 /**
- * 获取玩家的总补给容量
+ * Get total supply capacity for player
  */
 export function getTotalSupplyCapacity(gameState: GameState, playerId: string): number {
   return gameState.buildings
@@ -293,7 +293,7 @@ export function getTotalSupplyCapacity(gameState: GameState, playerId: string): 
 }
 
 /**
- * 获取玩家当前使用的补给
+ * Get current supply used by player
  */
 export function getCurrentSupplyUsed(gameState: GameState, playerId: string): number {
   return gameState.units.filter(u => u.ownerId === playerId).length;

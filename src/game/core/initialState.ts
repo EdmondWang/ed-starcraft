@@ -74,7 +74,7 @@ function createBuilding(
     hp: stats.maxHp,
     stats,
     isTownHall: kind === 'town-hall',
-    isBuilding: false,
+    isBuilding: true,
     buildProgress: 100,
   };
 }
