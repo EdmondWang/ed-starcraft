@@ -152,8 +152,8 @@ export function screenToWorld(
   cameraZoom: number = 1,
 ): { x: number; y: number } {
   return {
-    x: screenX / (tileSize * cameraZoom) - cameraX,
-    y: screenY / (tileSize * cameraZoom) - cameraY,
+    x: screenX / (tileSize * cameraZoom) + cameraX,
+    y: screenY / (tileSize * cameraZoom) + cameraY,
   };
 }
 
@@ -166,9 +166,10 @@ export function worldToScreen(
   cameraX: number,
   cameraY: number,
   tileSize: number,
+  cameraZoom: number = 1,
 ): Vec2 {
   return {
-    x: (worldX - cameraX) * tileSize,
-    y: (worldY - cameraY) * tileSize,
+    x: (worldX - cameraX) * tileSize * cameraZoom,
+    y: (worldY - cameraY) * tileSize * cameraZoom,
   };
 }

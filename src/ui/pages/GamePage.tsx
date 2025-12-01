@@ -148,6 +148,22 @@ export function GamePage() {
 
   const navigate = useNavigate();
 
+  // 同步相机状态到场景
+  useEffect(() => {
+    if (!sceneRef.current) return;
+
+    const scene = sceneRef.current as Container & {
+      __camera?: { x: number; y: number; zoom: number };
+    };
+
+    // 更新场景中的相机状态，使其与组件状态保持一致
+    scene.__camera = {
+      x: cameraState.x,
+      y: cameraState.y,
+      zoom: cameraState.zoom,
+    };
+  }, [cameraState]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -184,6 +200,16 @@ export function GamePage() {
           const scene = createScene(initialState);
           sceneRef.current = scene;
           app.stage.addChild(scene);
+
+          // 初始化相机状态，使其与组件状态保持一致
+          const sceneWithCamera = scene as Container & {
+            __camera?: { x: number; y: number; zoom: number };
+          };
+          sceneWithCamera.__camera = {
+            x: cameraState.x,
+            y: cameraState.y,
+            zoom: cameraState.zoom,
+          };
 
           // 鼠标事件处理
           const handleMouseDown = (e: MouseEvent) => {

@@ -279,9 +279,6 @@ export function createScene(state: GameState): Container {
     }
   ).__camera = { x: cameraX, y: cameraY, zoom };
 
-  // Add padding to the bottom of the render area
-  sceneData.root.y = 20; // Move the entire scene up by 20px to create bottom padding
-
   return sceneData.root;
 }
 
